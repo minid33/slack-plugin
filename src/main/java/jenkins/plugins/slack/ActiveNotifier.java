@@ -43,7 +43,7 @@ public class ActiveNotifier implements FineGrainedNotifier {
         } else if (cause != null) {
             MessageBuilder message = new MessageBuilder(notifier, build);
             message.append(cause.getShortDescription());
-            notifyStart(build, message.appendOpenLink().toString());
+            notifyStart(build, message.toString());
         } else {
             notifyStart(build, getBuildStatusMessage(build));
         }
@@ -100,7 +100,7 @@ public class ActiveNotifier implements FineGrainedNotifier {
         message.append(" (");
         message.append(files.size());
         message.append(" file(s) changed)");
-        return message.appendOpenLink().toString();
+        return message.toString();
     }
 
     static String getBuildColor(AbstractBuild r) {
@@ -118,7 +118,7 @@ public class ActiveNotifier implements FineGrainedNotifier {
         MessageBuilder message = new MessageBuilder(notifier, r);
         message.appendStatusMessage();
         message.appendDuration();
-        return message.appendOpenLink().toString();
+        return message.toString();
     }
 
     public static class MessageBuilder {
@@ -165,9 +165,12 @@ public class ActiveNotifier implements FineGrainedNotifier {
         }
 
         private MessageBuilder startMessage() {
+            String url = notifier.getBuildServerUrl() + build.getUrl();
+            String displayName = this.escape(build.getDisplayName());
+
             message.append(this.escape(build.getProject().getDisplayName()));
             message.append(" - ");
-            message.append(this.escape(build.getDisplayName()));
+            message.append(" (<").append(url).append("|" + displayName + ">)");
             message.append(" ");
             return this;
         }
